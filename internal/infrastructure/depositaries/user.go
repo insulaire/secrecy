@@ -17,7 +17,6 @@ func NewUserRepository() *UserRepository {
 var _ depositaries.IUser = &UserRepository{}
 
 func (this *UserRepository) GetUserInfo(name string) (*entities.User, error) {
-
 	db := mysql.GetDB()
 	db.AutoMigrate(&entities.User{})
 	var user entities.User

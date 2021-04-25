@@ -1,8 +1,7 @@
 package entities
 
 import (
-	"log"
-	"secrecy/internal/infrastructure/mysql"
+	"errors"
 )
 
 type User struct {
@@ -11,14 +10,9 @@ type User struct {
 	Password string
 }
 
-func (user *User) CheckPassword(name, password string) bool {
-	db := mysql.GetDB()
-	db.AutoMigrate(&User{})
-	var count int
-	err := db.Where("name = ?", name).Where("password = ?", password).Find(&User{}).Count(&count).Error
-	if err != nil {
-		log.Println(err)
-		return false
+func (user *User) Valid() error {
+	if user.Name == "" {
+		return errors.New("用户名称必填")
 	}
-	return count > 0
+	return nil
 }
