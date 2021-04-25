@@ -1,13 +1,15 @@
 package depositaries
 
 import (
-	"log"
 	"secrecy/internal/domain/depositaries"
 	"secrecy/internal/domain/entities"
 	"secrecy/internal/infrastructure/mysql"
+
+	"github.com/jinzhu/gorm"
 )
 
 type UserRepository struct {
+	mysql.Context
 }
 
 func NewUserRepository() *UserRepository {
@@ -17,13 +19,20 @@ func NewUserRepository() *UserRepository {
 var _ depositaries.IUser = &UserRepository{}
 
 func (this *UserRepository) GetUserInfo(name string) (*entities.User, error) {
-	db := mysql.GetDB()
-	db.AutoMigrate(&entities.User{})
 	var user entities.User
-	err := db.Where("name = ?", name).Find(&user).Error
+	err := this.Handle(func(db *gorm.DB) error {
+		return db.Where("name = ?", name).Find(&user).Error
+	})
 	if err != nil {
-		log.Println(err)
 		return nil, err
 	}
+
 	return &user, nil
+}
+
+func (this *UserRepository) InsertUser(user entities.User) error {
+	if err := user.Valid(); err != nil {
+		return err
+	}
+	return nil
 }

@@ -5,5 +5,6 @@ import (
 )
 
 type IUser interface {
-	GetUserInfo(name string) (*entities.User, error)
+	GetUserInfo(string) (*entities.User, error)
+	InsertUser(entities.User) error
 }

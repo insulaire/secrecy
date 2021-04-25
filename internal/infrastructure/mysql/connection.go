@@ -25,11 +25,11 @@ func (conf *DBConfig) String() string {
 
 var once sync.Once
 
-var MysqlConnectPool pool.Pool
+var mysqlConnectPool pool.Pool
 
 func InitConnectPool(config *DBConfig) {
 	once.Do(func() {
-		MysqlConnectPool = pool.NewPool(pool.PoolConfig{
+		mysqlConnectPool = pool.NewPool(pool.PoolConfig{
 			InitFn: func() interface{} {
 				db, err := newMysqlDB(config)
 				if err != nil {
@@ -41,11 +41,6 @@ func InitConnectPool(config *DBConfig) {
 			Max: 10,
 		})
 	})
-}
-
-func GetDB() *gorm.DB {
-	db, _ := MysqlConnectPool.Get().(*gorm.DB)
-	return db
 }
 
 func newMysqlDB(config *DBConfig) (*gorm.DB, error) {

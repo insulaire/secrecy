@@ -1,16 +1,17 @@
 package application
 
 import (
-	"secrecy/internal/infrastructure/depositaries"
+	"secrecy/internal/domain/depositaries"
+	de "secrecy/internal/infrastructure/depositaries"
 )
 
 type userApp struct {
-	us depositaries.UserRepository
+	us depositaries.IUser
 }
 
 func NewUserApp() UserAppInterface {
 	return &userApp{
-		us: depositaries.UserRepository{},
+		us: de.NewUserRepository(),
 	}
 }
 
