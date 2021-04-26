@@ -18,6 +18,16 @@ func NewUserRepository() *UserRepository {
 
 var _ depositaries.IUser = &UserRepository{}
 
+func init() {
+	db := NewUserRepository()
+
+	if err := db.Handle(func(db *gorm.DB) error {
+		return db.AutoMigrate(&entities.User{}).Error
+	}); err != nil {
+		panic(err)
+	}
+}
+
 func (this *UserRepository) GetUserInfo(name string) (*entities.User, error) {
 	var user entities.User
 	err := this.Handle(func(db *gorm.DB) error {
@@ -34,5 +44,18 @@ func (this *UserRepository) InsertUser(user entities.User) error {
 	if err := user.Valid(); err != nil {
 		return err
 	}
-	return nil
+	user.InsertDefault(user.CreateBy)
+
+	return this.Handle(func(db *gorm.DB) error {
+		return db.Create(user).Error
+	})
+}
+
+func (this *UserRepository) QueryUserList() []entities.User {
+	result := []entities.User{}
+	this.Handle(func(db *gorm.DB) error {
+		db.Unscoped().Find(&result)
+		return nil
+	})
+	return result
 }

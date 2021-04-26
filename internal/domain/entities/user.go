@@ -6,8 +6,8 @@ import (
 
 type User struct {
 	BaseEntity
-	Name     string
-	Password string
+	Name     string `gorm:"column:name;unique_index"`
+	Password string `gorm:"column:password"`
 }
 
 func (user *User) Valid() error {

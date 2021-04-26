@@ -20,7 +20,8 @@ type DBConfig struct {
 }
 
 func (conf *DBConfig) String() string {
-	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", conf.User, conf.Password, conf.Host, conf.Port, conf.DBName)
+	//?parseTime=true 这段缺失会导致 gorm 解析不到 time.Time类型
+	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?parseTime=true", conf.User, conf.Password, conf.Host, conf.Port, conf.DBName)
 }
 
 var once sync.Once

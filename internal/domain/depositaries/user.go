@@ -7,4 +7,5 @@ import (
 type IUser interface {
 	GetUserInfo(string) (*entities.User, error)
 	InsertUser(entities.User) error
+	QueryUserList() []entities.User
 }
